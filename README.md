@@ -129,37 +129,37 @@ Apart from these modifications, the computations of the previous section remain 
 
 - the funding must be computed starting from the number of futures contracts, which varies over time:
 
-  ```math
-  f(t) = \frac{k\, n_c(t)\, r(t)}{p(t)}\,;
-  ```
+```math
+f(t) = \frac{k\, n_c(t)\, r(t)}{p(t)}\,;
+```
 
 - the rehedge leads to a decrease of the balance of the portfolio:
 
-  ```math
-  W(t) = W_0 + \sum_{t_f < t'\leq t}f(t') - k\, \phi_f\,\sum_{t'\in T_c^{(t)}}\frac{\Delta n_c(t')}{p(t')}\,;
-  ```
+```math
+W(t) = W_0 + \sum_{t_f < t'\leq t}f(t') - k\, \phi_f\,\sum_{t'\in T_c^{(t)}}\frac{\Delta n_c(t')}{p(t')}\,;
+```
 
 - the P&L deriving from the futures is:
 
-  ```math
-  PL_f(t) = k\, n_c(t)\,\left(\frac{1}{p(t)} - \frac{1}{p_m(t)}\right)\,;
-  ```
+```math
+PL_f(t) = k\, n_c(t)\,\left(\frac{1}{p(t)} - \frac{1}{p_m(t)}\right)\,;
+```
 
 - the equity in USD $`\tilde E_\$(t)`$ becomes:
 
-  ```math
-  \begin{aligned}
-  \tilde E_\$(t) &= \left[W(t) + PL_f(t)\right]\, p(t)\\[.2cm]
-  &= \left[W_0 - k\, \phi_f\,\sum_{t'\in T_c^{(t)}}\frac{\Delta n_c(t')}{p(t')}\right]\, p(t) + p(t)\,\sum_{t_f < t'\leq t}f(t') \\[.2cm]
-  &\quad + k\, n_c(t)\, p(t)\, \left[\frac{1}{p(t)} - \frac{1}{p_m(t)}\right]\,;
-  \end{aligned}
-  ```
+```math
+\begin{aligned}
+\tilde E_\$(t) &= \left[W(t) + PL_f(t)\right]\, p(t)\\[.2cm]
+&= \left[W_0 - k\, \phi_f\,\sum_{t'\in T_c^{(t)}}\frac{\Delta n_c(t')}{p(t')}\right]\, p(t) + p(t)\,\sum_{t_f < t'\leq t}f(t') \\[.2cm]
+&\quad + k\, n_c(t)\, p(t)\, \left[\frac{1}{p(t)} - \frac{1}{p_m(t)}\right]\,;
+\end{aligned}
+```
 
 - finally, the net equity is obtained as:
 
-  ```math
-  E_\$(t) = (1 - \phi_s)\, \left[\tilde E_\$(t) - k\, n_c(t)\, \phi_f\right]\,.
-  ```
+```math
+E_\$(t) = (1 - \phi_s)\, \left[\tilde E_\$(t) - k\, n_c(t)\, \phi_f\right]\,.
+```
 
 ## Results of the perpetual cash&carry
 
