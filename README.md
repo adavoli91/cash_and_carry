@@ -28,178 +28,159 @@ The data are downloaded from the public API of Bybit (no API key is needed) only
 ### Cash&carry on perpetual without reinvestment
 In this section, we describe the mathematics behind a cash&carry operation done on the inverse perpetual futures, without reinvestment of the obtained *funding*.
 
-At the initial time $t_0$, let us imagine having a capital $C_\$$ in USD; the quantity of cryptocurrency we can buy is:
+At the initial time $`t_0`$, let us imagine having a capital $`C_\$`$ in USD; the quantity of cryptocurrency we can buy is:
 
-$$
+```math
 C_\text{฿} = \frac{C_\$}{p_0}\, (1 - \phi_s)\,,
-\tag{1}
-$$
+```
 
-where $p_0$ is the quote of the cryptocurrency in USD and $\phi_s$ is the fee rate for the spot.
+where $`p_0`$ is the quote of the cryptocurrency in USD and $`\phi_s`$ is the fee rate for the spot.
 
 The cash&carry strategy on perpetual futures consists in opening a short position using the purchased cryptocurrency as collateral, and collecting the *funding* which is periodically paid (in normal conditions, it is the short counterparty that collects it).
 
-Denoting by $k$ the multiplier of the inverse futures[^1], by $\ell$ the leverage used and by $p_f$ the quote of the cryptocurrency at the time $t_f$ of opening of the position, the number of futures contracts on which we go short is:
+Denoting by $`k`$ the multiplier of the inverse futures[^1], by $`\ell`$ the leverage used and by $`p_f`$ the quote of the cryptocurrency at the time $`t_f`$ of opening of the position, the number of futures contracts on which we go short is:
 
-$$
+```math
 n_c = \left\lfloor\frac{\ell\, C_\text{฿}\, p_f}{k}\right\rfloor\,.
-\tag{2}
-$$
+```
 
 The opening of a position on the futures also involves the payment of a fee, given by:
 
-$$
+```math
 \mathrm{fee}_f = \frac{k\, n_c\, \phi_f}{p_f}\,,
-\tag{3}
-$$
+```
 
-where $\phi_f$ is the fee rate for the futures; therefore, the net value $W_0$ of the portfolio is:
+where $`\phi_f`$ is the fee rate for the futures; therefore, the net value $`W_0`$ of the portfolio is:
 
-$$
+```math
 W_0 = C_\text{฿} - \mathrm{fee}_f\,.
-\tag{4}
-$$
+```
 
-Since the number $n_c$ of contracts is computed starting from $C_\text{฿}$, while the net value of the portfolio is $W_0 < C_\text{฿}$, the cash&carry is in fact slightly short with respect to the cryptocurrency, even with $\ell = 1$ (at the same time, there would also be a slight long effect deriving from the fact that $n_c$ is rounded down, thus leaving part of the cryptocurrency position partially unhedged; however, this effect is often negligible).
+Since the number $`n_c`$ of contracts is computed starting from $`C_\text{฿}`$, while the net value of the portfolio is $`W_0 < C_\text{฿}`$, the cash&carry is in fact slightly short with respect to the cryptocurrency, even with $`\ell = 1`$ (at the same time, there would also be a slight long effect deriving from the fact that $`n_c`$ is rounded down, thus leaving part of the cryptocurrency position partially unhedged; however, this effect is often negligible).
 
-An open position on an inverse perpetual futures involves the payment of a *funding* which depends on the *funding rate* $r(t)$ and on the notional of the position, and is defined as:
+An open position on an inverse perpetual futures involves the payment of a *funding* which depends on the *funding rate* $`r(t)`$ and on the notional of the position, and is defined as:
 
-$$
+```math
 f(t) = \frac{k\, n_c\, r(t)}{p(t)}\,,
-\tag{5}
-$$
+```
 
-and is expressed in cryptocurrency. From this it follows that the USD value of the funding received at time $t$, at that given instant, is $f_\$ = k\, n_c\, r(t)$, i.e., it depends on time only through the funding rate. Overall, the balance of the portfolio, over time, is:
+and is expressed in cryptocurrency. From this it follows that the USD value of the funding received at time $`t`$, at that given instant, is $`f_\$ = k\, n_c\, r(t)`$, i.e., it depends on time only through the funding rate. Overall, the balance of the portfolio, over time, is:
 
-$$
+```math
 W(t) = W_0 + \sum_{t_f < t'\leq t}f(t')\,.
-\tag{6}
-$$
+```
 
-Moreover, at a given instant $t$, the short position on the futures involves a P&L (expressed in cryptocurrency) given by:
+Moreover, at a given instant $`t`$, the short position on the futures involves a P&L (expressed in cryptocurrency) given by:
 
-$$
+```math
 PL_f(t) = k\, n_c\, \left(\frac{1}{p(t)} - \frac{1}{p_f}\right)\,.
-\tag{7}
-$$
+```
 
 Overall, therefore, the equity in cryptocurrency as a function of time is:
 
-$$
+```math
 \tilde E_\text{฿}(t) = W(t) + PL_f(t) = W_0 + \sum_{t_f < t'\leq t}f(t') + k\, n_c\, \left(\frac{1}{p(t)} - \frac{1}{p_f}\right)\,.
-\tag{8}
-$$
+```
 
 To obtain the corresponding value in USD, it is sufficient to multiply the total quantity of cryptocurrency by the current quote, obtaining:
 
-$$
+```math
 \tilde E_\$(t) = \tilde E_\text{฿}(t)\,p(t) = W_0\, p(t) + k\, n_c\, p(t)\, \left[\sum_{t_f < t'\leq t}\frac{r(t')}{p(t')} + \frac{1}{p(t)} - \frac{1}{p_f}\right]\,.
-\tag{9}
-$$
+```
 
 To obtain the net equity, we must consider that, when closing the position, a double fee has to be paid: for the closing of the short on the futures, and for the sale of the resulting spot. The net equity is therefore:
 
-$$
+```math
 E_\$(t) = (1 - \phi_s)\, \left[\tilde E_\$(t) - k\, n_c\, \phi_f\right]\,.
-\tag{10}
-$$
+```
 
 It is important to note that, in this formulation, the quantity of cryptocurrency obtained from the funding is exposed to the price risk, since it is not hedged by the futures; in the following section, we see how things change with reinvestment.
 
 ### Cash&carry on perpetual with reinvestment
 In case we want to keep hedging the cryptocurrency position, it is necessary to open further positions on the futures; this can be done at the moment when we come to hold a quantity of cryptocurrency sufficient to open a contract, i.e., when:
 
-$$
+```math
 \Delta n_c(t) \equiv \left\lfloor\frac{\ell\, p(t)\, F(t)}{k}\right\rfloor \geq 1\,,
-\tag{11}
-$$
+```
 
-where $F(t)$ is the quantity of cryptocurrency deriving from the funding not yet hedged by the futures:
+where $`F(t)`$ is the quantity of cryptocurrency deriving from the funding not yet hedged by the futures:
 
-$$
+```math
 F(t) = \sum_{t_f < t'\leq t} f(t') - \sum_{t'\in T_c^{(t)}}\frac{k\, \Delta n_c(t')}{\ell\, p(t')}\,,
-\tag{12}
-$$
+```
 
-with $T_c^{(t)}$ the set of the rehedge instants preceding $t$. The second term represents the cryptocurrency hedged by the rehedges already done: since $\Delta n_c$ is rounded down, at each rehedge an unhedged residual of funding remains, which is carried forward and contributes to the following rehedge. When the condition in Eq. (11) is satisfied, it is possible to increase the short position on the futures by $\Delta n_c(t)$[^2].
+with $`T_c^{(t)}`$ the set of the rehedge instants preceding $`t`$. The second term represents the cryptocurrency hedged by the rehedges already done: since $`\Delta n_c`$ is rounded down, at each rehedge an unhedged residual of funding remains, which is carried forward and contributes to the following rehedge. When the condition on $`\Delta n_c(t)`$ is satisfied, it is possible to increase the short position on the futures by $`\Delta n_c(t)`$[^2].
 
-The new average entry price of the position can be computed taking into account that the P&L of the futures (in cryptocurrency, since this is the reference currency for the futures) at any instant $\bar t$ must coincide with the sum of the P&Ls deriving from the single positions; defining $p_c$ the rehedge price and $p_m$ the average entry price, we obtain:
+The new average entry price of the position can be computed taking into account that the P&L of the futures (in cryptocurrency, since this is the reference currency for the futures) at any instant $`\bar t`$ must coincide with the sum of the P&Ls deriving from the single positions; defining $`p_c`$ the rehedge price and $`p_m`$ the average entry price, we obtain:
 
-$$
+```math
 k\, (n_c + \Delta n_c)\,\left(\frac{1}{\bar p} - \frac{1}{p_m}\right) = k\, n_c\,\left(\frac{1}{\bar p} - \frac{1}{p_f}\right) + k\, \Delta n_c\,\left(\frac{1}{\bar p} - \frac{1}{p_c}\right)\,,
-\tag{13}
-$$
+```
 
 from which:
 
-$$
+```math
 p_m = \frac{n_c + \Delta n_c}{\dfrac{n_c}{p_f} + \dfrac{\Delta n_c}{p_c}}\,.
-\tag{14}
-$$
+```
 
-Therefore, the average entry price is the (weighted) harmonic mean between the rehedge price and $p_f$. For subsequent rehedges, the starting configuration will no longer be $(n_c,\, p_f)$ but $(n_c(t),\, p_m)$.
+Therefore, the average entry price is the (weighted) harmonic mean between the rehedge price and $`p_f`$. For subsequent rehedges, the starting configuration will no longer be $`(n_c,\, p_f)`$ but $`(n_c(t),\, p_m)`$.
 
 Apart from these modifications, the computations of the previous section remain valid, with a couple of clarifications:
 
 - the funding must be computed starting from the number of futures contracts, which varies over time:
 
-  $$
+  ```math
   f(t) = \frac{k\, n_c(t)\, r(t)}{p(t)}\,;
-  \tag{15}
-  $$
+  ```
 
 - the rehedge leads to a decrease of the balance of the portfolio:
 
-  $$
+  ```math
   W(t) = W_0 + \sum_{t_f < t'\leq t}f(t') - k\, \phi_f\,\sum_{t'\in T_c^{(t)}}\frac{\Delta n_c(t')}{p(t')}\,;
-  \tag{16}
-  $$
+  ```
 
 - the P&L deriving from the futures is:
 
-  $$
+  ```math
   PL_f(t) = k\, n_c(t)\,\left(\frac{1}{p(t)} - \frac{1}{p_m(t)}\right)\,;
-  \tag{17}
-  $$
+  ```
 
-- Eq. (9) becomes:
+- the equity in USD $`\tilde E_\$(t)`$ becomes:
 
-  $$
+  ```math
   \begin{aligned}
   \tilde E_\$(t) &= \left[W(t) + PL_f(t)\right]\, p(t)\\[.2cm]
   &= \left[W_0 - k\, \phi_f\,\sum_{t'\in T_c^{(t)}}\frac{\Delta n_c(t')}{p(t')}\right]\, p(t) + p(t)\,\sum_{t_f < t'\leq t}f(t') \\[.2cm]
   &\quad + k\, n_c(t)\, p(t)\, \left[\frac{1}{p(t)} - \frac{1}{p_m(t)}\right]\,;
   \end{aligned}
-  \tag{18}
-  $$
+  ```
 
 - finally, the net equity is obtained as:
 
-  $$
+  ```math
   E_\$(t) = (1 - \phi_s)\, \left[\tilde E_\$(t) - k\, n_c(t)\, \phi_f\right]\,.
-  \tag{19}
-  $$
+  ```
 
 ## Results of the perpetual cash&carry
 
 ### Data and setup
 The backtest uses the following data, downloaded from Bybit:
 
-- the hourly index price of `BTCUSD` and `ETHUSD`, used as spot price $p(t)$;
-- the history of the funding rate $r(t)$ of the inverse perpetuals `BTCUSD` and `ETHUSD`, which is paid every 8 hours.
+- the hourly index price of `BTCUSD` and `ETHUSD`, used as spot price $`p(t)`$;
+- the history of the funding rate $`r(t)`$ of the inverse perpetuals `BTCUSD` and `ETHUSD`, which is paid every 8 hours.
 
 The spot is resampled on 8-hour bars, aligned with the funding times. The operation starts on 2021-07-01 and ends on 2026-10-14 (last available data), i.e., it covers about 5.3 years and 5793 funding payments for each cryptocurrency. The parameters of the backtest are:
 
 | Parameter | Symbol | Value |
 |---|---|---|
-| Initial capital | $C_\$$ | 1000 USD |
-| Multiplier of the inverse futures | $k$ | 1 USD |
-| Leverage | $\ell$ | 1 |
-| Fee rate for the spot | $\phi_s$ | 0.1% |
-| Fee rate for the futures | $\phi_f$ | 0.055% |
-| Minimum rehedge value | | 1% of $C_\$$ |
+| Initial capital | $`C_\$`$ | 1000 USD |
+| Multiplier of the inverse futures | $`k`$ | 1 USD |
+| Leverage | $`\ell`$ | 1 |
+| Fee rate for the spot | $`\phi_s`$ | 0.1% |
+| Fee rate for the futures | $`\phi_f`$ | 0.055% |
+| Minimum rehedge value | | 1% of $`C_\$`$ |
 
-The last parameter is the threshold discussed in footnote 2: a rehedge is done only when $k\,\Delta n_c(t) \geq 10$ USD. The equity shown below is always the net equity of Eq. (19), i.e., the value which would be obtained by closing the whole position at time $t$. The performance is measured by:
+The last parameter is the threshold discussed in footnote 2: a rehedge is done only when $`k\,\Delta n_c(t) \geq 10`$ USD. The equity shown below is always the net equity $`E_\$(t)`$ defined in the previous section, i.e., the value which would be obtained by closing the whole position at time $`t`$. The performance is measured by:
 
 - the compound annual growth rate (CAGR);
 - the drawdown (DD), computed on the 8-hour equity and then taking the daily minimum; the average DD is the mean over the days in which the DD is non-zero;
@@ -235,7 +216,7 @@ The equity and the drawdown of the perpetual C&C are shown in Figure 1 for BTC a
 The two cryptocurrencies give very similar results, with a CAGR of about 6.2% per year, although the spot had a completely different behaviour in the two cases (+137% for BTC and +10% for ETH, with drawdowns of about −80% for both). The correlation with the spot is negligible, which confirms that the position is neutral with respect to the price: the equity grows almost monotonically, with a volatility below 1% per year.
 
 ### Dependence on the funding regime
-Since the price risk is hedged, the return depends almost entirely on the funding rate. Table 2 shows, for each year, the return of the strategy and the mean funding rate, annualized ($3 \times 365$ payments per year).
+Since the price risk is hedged, the return depends almost entirely on the funding rate. Table 2 shows, for each year, the return of the strategy and the mean funding rate, annualized ($`3 \times 365`$ payments per year).
 
 **Table 2.** Yearly return of the perpetual C&C and annualized mean funding rate. 2021 starts on 2021-07-01, and 2026 ends on 2026-10-14.
 
@@ -267,8 +248,8 @@ The backtest has some limitations:
 
 - the P&L of the futures is computed using the index price, so the basis between the perpetual and the index is neglected;
 - the slippage and the margin requirements are not modelled;
-- a single set of parameters is tested (in particular, $\ell = 1$ and a rehedge threshold of 1% of the capital).
+- a single set of parameters is tested (in particular, $`\ell = 1`$ and a rehedge threshold of 1% of the capital).
 
-[^1]: The multiplier $k$ is defined in such a way that an inverse futures contract is worth $k$ \$, regardless of the quote.
+[^1]: The multiplier $`k`$ is defined in such a way that an inverse futures contract is worth $`k`$ \$, regardless of the quote.
 
 [^2]: Sometimes, however, it can be preferable to wait until the position to be possibly opened corresponds, in USD, at least to a certain fraction of the initial capital, to limit the impact of fees.
