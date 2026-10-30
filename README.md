@@ -171,14 +171,14 @@ The backtest uses the following data, downloaded from Bybit:
 
 The spot is resampled on 8-hour bars, aligned with the funding times. The operation starts on 2021-07-01 and ends on 2026-10-14 (last available data), i.e., it covers about 5.3 years and 5793 funding payments for each cryptocurrency. The parameters of the backtest are:
 
-| Parameter | Symbol | Value |
-|---|---|---|
-| Initial capital | $`C_\$`$ | 1000 USD |
-| Multiplier of the inverse futures | $`k`$ | 1 USD |
-| Leverage | $`\ell`$ | 1 |
-| Fee rate for the spot | $`\phi_s`$ | 0.1% |
-| Fee rate for the futures | $`\phi_f`$ | 0.055% |
-| Minimum rehedge value | | 1% of $`C_\$`$ |
+| Parameter | Value |
+|---|---|
+| Initial capital ($`C_\$`$) | 1000 USD |
+| Multiplier of the inverse futures ($`k`$) | 1 USD |
+| Leverage ($`\ell`$) | 1 |
+| Fee rate for the spot ($`\phi_s`$) | 0.1% |
+| Fee rate for the futures ($`\phi_f`$) | 0.055% |
+| Minimum rehedge value | 1% of $`C_\$`$ |
 
 The last parameter is the threshold discussed in footnote 2: a rehedge is done only when $`k\,\Delta n_c(t) \geq 10`$ USD. The equity shown below is always the net equity $`E_\$(t)`$ defined in the previous section, i.e., the value which would be obtained by closing the whole position at time $`t`$. The performance is measured by:
 
@@ -220,14 +220,20 @@ Since the price risk is hedged, the return depends almost entirely on the fundin
 
 **Table 2.** Yearly return of the perpetual C&C and annualized mean funding rate. 2021 starts on 2021-07-01, and 2026 ends on 2026-10-14.
 
-| Year | Return BTC | Funding BTC | Return ETH | Funding ETH |
-|---|---|---|---|---|
-| 2021 (partial) | 4.15% | 8.52% | 6.94% | 13.41% |
-| 2022 | −0.95% | −0.35% | −0.03% | −0.12% |
-| 2023 | 7.92% | 7.87% | 6.84% | 7.40% |
-| 2024 | 13.80% | 12.72% | 13.81% | 12.76% |
-| 2025 | 6.05% | 5.90% | 4.76% | 4.98% |
-| 2026 (partial) | 2.58% | 3.07% | 1.56% | 1.99% |
+<table>
+  <thead>
+    <tr><th rowspan="2">Year</th><th colspan="2">BTC</th><th colspan="2">ETH</th></tr>
+    <tr><th>Return</th><th>Funding</th><th>Return</th><th>Funding</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>2021 (partial)</td><td align="right">4.15%</td><td align="right">8.52%</td><td align="right">6.94%</td><td align="right">13.41%</td></tr>
+    <tr><td>2022</td><td align="right">−0.95%</td><td align="right">−0.35%</td><td align="right">−0.03%</td><td align="right">−0.12%</td></tr>
+    <tr><td>2023</td><td align="right">7.92%</td><td align="right">7.87%</td><td align="right">6.84%</td><td align="right">7.40%</td></tr>
+    <tr><td>2024</td><td align="right">13.80%</td><td align="right">12.72%</td><td align="right">13.81%</td><td align="right">12.76%</td></tr>
+    <tr><td>2025</td><td align="right">6.05%</td><td align="right">5.90%</td><td align="right">4.76%</td><td align="right">4.98%</td></tr>
+    <tr><td>2026 (partial)</td><td align="right">2.58%</td><td align="right">3.07%</td><td align="right">1.56%</td><td align="right">1.99%</td></tr>
+  </tbody>
+</table>
 
 The yearly return follows closely the annualized funding rate. The median funding rate is 10.95% per year for both cryptocurrencies, which corresponds to 0.01% every 8 hours, i.e., the base value of the funding on Bybit; however, the funding is negative in about 21% of the payments, which lowers the mean to about 6.2–6.3% per year, in line with the CAGR.
 
