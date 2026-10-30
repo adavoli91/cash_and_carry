@@ -11,10 +11,10 @@ The notebook also combines the two variants in an equally weighted portfolio. In
 # Repository structure
 ```
 cash_and_carry/
-├── data/                  # Bybit data (parquet), downloaded by the notebook and cached; not tracked by git
-├── figures/               # figures produced by the notebook (PNG)
+├── data/                  # Bybit data (parquet), downloaded by the notebook and cached
+├── figures/               # figures produced by the notebook
 ├── notebooks/
-│   └── backtest.ipynb     # data download, backtest of the dated C&C, of the perpetual C&C and of the portfolio
+│   └── backtest.ipynb     # data download and backtest of the strategy
 ├── .gitignore
 └── README.md
 ```
@@ -227,7 +227,7 @@ The backtest uses the following data, downloaded from Bybit:
 - the hourly index price of `BTCUSD` and `ETHUSD`, used as spot price $`p(t)`$;
 - the hourly quotes $`q_j(t)`$ of the inverse quarterly futures (e.g., `BTCUSDH21`, where the letters `H`, `M`, `U` and `Z` indicate the expiry in March, June, September and December), downloaded starting from about 200 days before each expiry; the missing quotes are forward-filled for at most 24 hours.
 
-The operation starts on 2021-07-01 and ends on 2026-10-14 (last available data), i.e., it covers about 5.3 years. The parameters of the backtest are:
+The operation starts on 2021-07-01 and ends on 2026-10-30 (last available data), i.e., it covers about 5.3 years. The parameters of the backtest are:
 
 | Parameter | Value |
 |---|---|
@@ -261,12 +261,12 @@ The equity and the drawdown of the dated C&C are shown in Figure 1 for BTC and i
 
 | Metric | BTC | ETH |
 |---|---|---|
-| Total return | 42.00% | 39.42% |
-| CAGR | 6.85% | 6.48% |
+| Total return | 42.40% | 41.28% |
+| CAGR | 6.85% | 6.69% |
 | Max DD | −3.11% | −4.50% |
-| Average DD | −0.73% | −1.10% |
-| CAGR / (average DD) | 9.42 | 5.89 |
-| Annualized volatility | 3.34% | 4.00% |
+| Average DD | −0.73% | −1.11% |
+| CAGR / (average DD) | 9.39 | 6.03 |
+| Annualized volatility | 3.35% | 4.10% |
 | Correlation with the spot | −0.32 | −0.27 |
 | Number of contracts | 14 | 13 |
 
@@ -325,7 +325,7 @@ Tables 2 and 3 show the contracts opened during the backtest. The position is al
 The mean annualized premium at the opening is 8.08% for BTC and 7.80% for ETH (the median is 6.17% and 5.96%, respectively). The return of each contract is very close to the premium at the opening rescaled on the duration of the contract, as expected from the theory: for instance, `BTCUSDZ21` was opened with an annualized premium of 5.85% and held for 183 days, which corresponds to $`5.85\% 	imes 183/365 \simeq 2.93\%`$, against a return of 2.88% (the difference is due to the fees). The highest premiums (up to about 24% per year) were found between the end of 2023 and the beginning of 2024, while the lowest ones in the second half of 2022, after the bearish phase: the contract `ETHUSDH23` was opened with a negative premium (−1.08%), since the strategy always chooses the maximum premium, even when it is negative, and it is the only contract which closed with a loss (−0.58%).
 
 ## Conclusions
-On the period 2021-07 to 2026-10, the dated C&C obtained a CAGR of 6.85% on BTC and 6.48% on ETH. The return of each contract is fixed at the opening by the premium of the futures, so the profit does not depend on the price; however, the mark-to-market of the premium causes drawdowns of up to 3–4.5%, and a volatility higher than that of the perpetual C&C.
+On the period 2021-07 to 2026-10, the dated C&C obtained a CAGR of 6.85% on BTC and 6.69% on ETH. The return of each contract is fixed at the opening by the premium of the futures, so the profit does not depend on the price; however, the mark-to-market of the premium causes drawdowns of up to 3–4.5%, and a volatility higher than that of the perpetual C&C.
 
 The backtest has some limitations:
 
@@ -336,7 +336,7 @@ The backtest has some limitations:
 # Results of the perpetual cash&carry
 
 ## Data and setup
-Besides the spot price $`p(t)`$ described for the dated C&C, the backtest uses the history of the funding rate $`r(t)`$ of the inverse perpetuals `BTCUSD` and `ETHUSD`, which is paid every 8 hours. The spot is resampled on 8-hour bars, aligned with the funding times. The period is the same as for the dated C&C, and it covers 5793 funding payments for each cryptocurrency.
+Besides the spot price $`p(t)`$ described for the dated C&C, the backtest uses the history of the funding rate $`r(t)`$ of the inverse perpetuals `BTCUSD` and `ETHUSD`, which is paid every 8 hours. The spot is resampled on 8-hour bars, aligned with the funding times. The period is the same as for the dated C&C, and it covers 5841 funding payments for each cryptocurrency.
 
 The parameters are the same as for the dated C&C, with the addition of the minimum rehedge value, which is equal to 1% of $`C_\$`$ (see footnote 2): a rehedge is done only when $`k\,\Delta n_c(t) \geq 10`$ USD. The equity shown below is the net equity $`E_\$(t)`$ of the perpetual C&C with reinvestment, and the performance is measured with the same metrics used for the dated C&C.
 
@@ -355,23 +355,23 @@ The equity and the drawdown of the perpetual C&C are shown in Figure 3 for BTC a
 
 | Metric | BTC | ETH |
 |---|---|---|
-| Total return | 37.37% | 37.90% |
-| CAGR | 6.18% | 6.26% |
+| Total return | 37.89% | 38.30% |
+| CAGR | 6.21% | 6.27% |
 | Max DD | −2.12% | −3.02% |
-| Average DD | −0.29% | −0.58% |
-| CAGR / (average DD) | 21.00 | 10.85 |
+| Average DD | −0.29% | −0.57% |
+| CAGR / (average DD) | 21.09 | 10.91 |
 | Annualized volatility | 0.65% | 0.86% |
 | Correlation with the spot | 0.07 | 0.03 |
-| Number of rehedges | 37 | 38 |
-| Total return of the spot | 137.1% | 9.6% |
+| Number of rehedges | 38 | 38 |
+| Total return of the spot | 122.0% | −1.2% |
 | Max DD of the spot | −77.0% | −80.3% |
 
-The two cryptocurrencies give very similar results, with a CAGR of about 6.2% per year, although the spot had a completely different behaviour in the two cases (+137% for BTC and +10% for ETH, with drawdowns of about −80% for both). The correlation with the spot is negligible, which confirms that the position is neutral with respect to the price: the equity grows almost monotonically, with a volatility below 1% per year.
+The two cryptocurrencies give very similar results, with a CAGR of about 6.2% per year, although the spot had a completely different behaviour in the two cases (+122% for BTC and −1% for ETH, with drawdowns of about −80% for both). The correlation with the spot is negligible, which confirms that the position is neutral with respect to the price: the equity grows almost monotonically, with a volatility below 1% per year.
 
 ## Dependence on the funding regime
 Since the price risk is hedged, the return depends almost entirely on the funding rate. Table 5 shows, for each year, the return of the strategy and the mean funding rate, annualized ($`3 \times 365`$ payments per year).
 
-**Table 5.** Yearly return of the perpetual C&C and annualized mean funding rate. 2021 starts on 2021-07-01, and 2026 ends on 2026-10-14.
+**Table 5.** Yearly return of the perpetual C&C and annualized mean funding rate. 2021 starts on 2021-07-01, and 2026 ends on 2026-10-30.
 
 <table>
   <thead>
@@ -384,16 +384,16 @@ Since the price risk is hedged, the return depends almost entirely on the fundin
     <tr><td>2023</td><td align="right">7.92%</td><td align="right">7.87%</td><td align="right">6.84%</td><td align="right">7.40%</td></tr>
     <tr><td>2024</td><td align="right">13.80%</td><td align="right">12.72%</td><td align="right">13.81%</td><td align="right">12.76%</td></tr>
     <tr><td>2025</td><td align="right">6.05%</td><td align="right">5.90%</td><td align="right">4.76%</td><td align="right">4.98%</td></tr>
-    <tr><td>2026 (partial)</td><td align="right">2.58%</td><td align="right">3.07%</td><td align="right">1.56%</td><td align="right">1.99%</td></tr>
+    <tr><td>2026 (partial)</td><td align="right">2.97%</td><td align="right">3.39%</td><td align="right">1.85%</td><td align="right">2.27%</td></tr>
   </tbody>
 </table>
 
-The yearly return follows closely the annualized funding rate. The median funding rate is 10.95% per year for both cryptocurrencies, which corresponds to 0.01% every 8 hours, i.e., the base value of the funding on Bybit; however, the funding is negative in about 21% of the payments, which lowers the mean to about 6.2–6.3% per year, in line with the CAGR.
+The yearly return follows closely the annualized funding rate. The median funding rate is 10.95% per year for both cryptocurrencies, which corresponds to 0.01% every 8 hours, i.e., the base value of the funding on Bybit; however, the funding is negative in about 20–21% of the payments, which lowers the mean to about 6.2–6.3% per year, in line with the CAGR.
 
-The only losing year is 2022, when the funding was on average slightly negative. The maximum drawdown occurs at the end of 2022, during the market stress following the collapse of FTX: for BTC, the equity went down by 2.12% between 2022-11-07 and 2022-12-19, while the sum of the funding rates over the same period was about −1.97%, which corresponds to about −20 USD out of a drop of about 22 USD; for ETH, the drawdown of 3.02% (2022-08-19 to 2022-12-13) corresponds to a sum of the funding rates of about −3.17%. The drawdowns are therefore due to the periods of negative funding, and not to the price movements. As a consequence, the return over the last year (red curve in Figures 7 and 8, in the results of the portfolio) goes slightly below zero only at the beginning of 2023 (minimum of −1.06% for BTC and −0.45% for ETH), and reaches its maximum of about 14% at the end of 2024; at the end of the backtest, it is about 3.4% for BTC and 2.4% for ETH.
+The only losing year is 2022, when the funding was on average slightly negative. The maximum drawdown occurs at the end of 2022, during the market stress following the collapse of FTX: for BTC, the equity went down by 2.12% between 2022-11-07 and 2022-12-19, while the sum of the funding rates over the same period was about −1.97%, which corresponds to about −20 USD out of a drop of about 22 USD; for ETH, the drawdown of 3.02% (2022-08-19 to 2022-12-13) corresponds to a sum of the funding rates of about −3.17%. The drawdowns are therefore due to the periods of negative funding, and not to the price movements. As a consequence, the return over the last year (red curve in Figures 7 and 8, in the results of the portfolio) goes slightly below zero only at the beginning of 2023 (minimum of −1.06% for BTC and −0.45% for ETH), and reaches its maximum of about 14% at the end of 2024; at the end of the backtest, it is about 3.5% for BTC and 2.5% for ETH.
 
 ## Conclusions
-On the period 2021-07 to 2026-10, the perpetual C&C with reinvestment of the funding obtained a CAGR of about 6.2% per year on both BTC and ETH, with a maximum drawdown of 2–3% and a negligible correlation with the spot. The return is essentially the funding rate, so it is not constant over time: it was close to zero in 2022, about 13–14% in 2024, and has decreased to about 2–3% in the last year.
+On the period 2021-07 to 2026-10, the perpetual C&C with reinvestment of the funding obtained a CAGR of about 6.2% per year on both BTC and ETH, with a maximum drawdown of 2–3% and a negligible correlation with the spot. The return is essentially the funding rate, so it is not constant over time: it was close to zero in 2022, about 13–14% in 2024, and has decreased to about 2.5–3.5% in the last year.
 
 The backtest has some limitations:
 
@@ -423,12 +423,12 @@ The equity and the drawdown of the portfolio are shown in Figure 5 for BTC and i
     <tr><th>Dated</th><th>Perpetual</th><th>Portfolio</th><th>Dated</th><th>Perpetual</th><th>Portfolio</th></tr>
   </thead>
   <tbody>
-    <tr><td>Total return</td><td align="right">42.00%</td><td align="right">37.37%</td><td align="right">39.68%</td><td align="right">39.42%</td><td align="right">37.90%</td><td align="right">38.66%</td></tr>
-    <tr><td>CAGR</td><td align="right">6.85%</td><td align="right">6.18%</td><td align="right">6.52%</td><td align="right">6.48%</td><td align="right">6.26%</td><td align="right">6.37%</td></tr>
+    <tr><td>Total return</td><td align="right">42.40%</td><td align="right">37.89%</td><td align="right">40.15%</td><td align="right">41.28%</td><td align="right">38.30%</td><td align="right">39.79%</td></tr>
+    <tr><td>CAGR</td><td align="right">6.85%</td><td align="right">6.21%</td><td align="right">6.53%</td><td align="right">6.69%</td><td align="right">6.27%</td><td align="right">6.48%</td></tr>
     <tr><td>Max DD</td><td align="right">−3.11%</td><td align="right">−2.12%</td><td align="right">−1.63%</td><td align="right">−4.50%</td><td align="right">−3.02%</td><td align="right">−2.80%</td></tr>
-    <tr><td>Average DD</td><td align="right">−0.73%</td><td align="right">−0.29%</td><td align="right">−0.32%</td><td align="right">−1.10%</td><td align="right">−0.58%</td><td align="right">−0.60%</td></tr>
-    <tr><td>CAGR / (average DD)</td><td align="right">9.42</td><td align="right">21.00</td><td align="right">20.18</td><td align="right">5.89</td><td align="right">10.85</td><td align="right">10.58</td></tr>
-    <tr><td>Annualized volatility</td><td align="right">3.34%</td><td align="right">0.65%</td><td align="right">1.71%</td><td align="right">4.00%</td><td align="right">0.86%</td><td align="right">2.05%</td></tr>
+    <tr><td>Average DD</td><td align="right">−0.73%</td><td align="right">−0.29%</td><td align="right">−0.32%</td><td align="right">−1.11%</td><td align="right">−0.57%</td><td align="right">−0.61%</td></tr>
+    <tr><td>CAGR / (average DD)</td><td align="right">9.39</td><td align="right">21.09</td><td align="right">20.16</td><td align="right">6.03</td><td align="right">10.91</td><td align="right">10.69</td></tr>
+    <tr><td>Annualized volatility</td><td align="right">3.35%</td><td align="right">0.65%</td><td align="right">1.71%</td><td align="right">4.10%</td><td align="right">0.86%</td><td align="right">2.10%</td></tr>
     <tr><td>Correlation with the spot</td><td align="right">−0.32</td><td align="right">0.07</td><td align="right">−0.30</td><td align="right">−0.27</td><td align="right">0.03</td><td align="right">−0.25</td></tr>
     <tr><td>Minimum return over the last year</td><td align="right">0.67%</td><td align="right">−1.06%</td><td align="right">0.89%</td><td align="right">−1.93%</td><td align="right">−0.45%</td><td align="right">−0.57%</td></tr>
   </tbody>
@@ -439,7 +439,7 @@ The two variants are almost uncorrelated: the correlation between their daily re
 ## Return over time
 Table 7 shows the yearly return of the two variants and of the portfolio, while Figures 7 and 8 show the return over the last year.
 
-**Table 7.** Yearly return of the dated C&C, of the perpetual C&C and of the portfolio. 2021 starts on 2021-07-01, and 2026 ends on 2026-10-14.
+**Table 7.** Yearly return of the dated C&C, of the perpetual C&C and of the portfolio. 2021 starts on 2021-07-01, and 2026 ends on 2026-10-30.
 
 <table>
   <thead>
@@ -452,7 +452,7 @@ Table 7 shows the yearly return of the two variants and of the portfolio, while 
     <tr><td>2023</td><td align="right">2.06%</td><td align="right">7.92%</td><td align="right">4.93%</td><td align="right">2.06%</td><td align="right">6.84%</td><td align="right">4.45%</td></tr>
     <tr><td>2024</td><td align="right">17.23%</td><td align="right">13.80%</td><td align="right">15.50%</td><td align="right">16.92%</td><td align="right">13.81%</td><td align="right">15.33%</td></tr>
     <tr><td>2025</td><td align="right">8.24%</td><td align="right">6.05%</td><td align="right">7.15%</td><td align="right">7.03%</td><td align="right">4.76%</td><td align="right">5.88%</td></tr>
-    <tr><td>2026 (partial)</td><td align="right">2.16%</td><td align="right">2.58%</td><td align="right">2.37%</td><td align="right">2.37%</td><td align="right">1.56%</td><td align="right">1.97%</td></tr>
+    <tr><td>2026 (partial)</td><td align="right">2.45%</td><td align="right">2.97%</td><td align="right">2.70%</td><td align="right">3.74%</td><td align="right">1.85%</td><td align="right">2.80%</td></tr>
   </tbody>
 </table>
 
@@ -466,11 +466,11 @@ The two variants perform well in different periods: in 2022, when the funding wa
 
 **Figure 8.** Return over the last year on ETH, for the dated C&C (blue), the perpetual C&C (red) and the portfolio (green).
 
-Thanks to the diversification, the return over the last year of the portfolio is always positive for BTC (minimum of 0.89%), and it is negative only in 1.7% of the days for ETH (minimum of −0.57%), while each variant alone goes below zero at least on one of the two cryptocurrencies.
+Thanks to the diversification, the return over the last year of the portfolio is always positive for BTC (minimum of 0.89%), and it is negative only in 1.6% of the days for ETH (minimum of −0.57%), while each variant alone goes below zero at least on one of the two cryptocurrencies.
 
 ## Conclusions
-On the period 2021-07 to 2026-10, the C&C obtained a CAGR between 6.2% and 6.9% per year on both BTC and ETH, with all the variants, although the price of the spot had a completely different behaviour on the two cryptocurrencies. The dated C&C has a slightly higher return, but also higher drawdowns and volatility, due to the mark-to-market of the premium; the perpetual C&C has a more regular equity, but its return depends on the funding, which can be negative for long periods. Since the two variants are almost uncorrelated, the equally weighted portfolio reduces the maximum drawdown with respect to both of them, while keeping a CAGR of about 6.4–6.5% per year.
+On the period 2021-07 to 2026-10, the C&C obtained a CAGR between 6.2% and 6.9% per year on both BTC and ETH, with all the variants, although the price of the spot had a completely different behaviour on the two cryptocurrencies. The dated C&C has a slightly higher return, but also higher drawdowns and volatility, due to the mark-to-market of the premium; the perpetual C&C has a more regular equity, but its return depends on the funding, which can be negative for long periods. Since the two variants are almost uncorrelated, the equally weighted portfolio reduces the maximum drawdown with respect to both of them, while keeping a CAGR of about 6.5% per year.
 
-[^1]: The multiplier $`k`$ is defined in such a way that an inverse futures contract is worth $`k`$ \$, regardless of the quote.
+[^1]: The multiplier $k$ is defined in such a way that an inverse futures contract is worth $k$ USD, regardless of the quote.
 
 [^2]: Sometimes, however, it can be preferable to wait until the position to be possibly opened corresponds, in USD, at least to a certain fraction of the initial capital, to limit the impact of fees.
