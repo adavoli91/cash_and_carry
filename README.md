@@ -471,6 +471,6 @@ Thanks to the diversification, the return over the last year of the portfolio is
 ## Conclusions
 On the period 2021-07 to 2026-10, the C&C obtained a CAGR between 6.2% and 6.9% per year on both BTC and ETH, with all the variants, although the price of the spot had a completely different behaviour on the two cryptocurrencies. The dated C&C has a slightly higher return, but also higher drawdowns and volatility, due to the mark-to-market of the premium; the perpetual C&C has a more regular equity, but its return depends on the funding, which can be negative for long periods. Since the two variants are almost uncorrelated, the equally weighted portfolio reduces the maximum drawdown with respect to both of them, while keeping a CAGR of about 6.5% per year.
 
-[^1]: The multiplier $k$ is defined in such a way that an inverse futures contract is worth $k$ USD, regardless of the quote.
+[^1]: The multiplier *k* is defined in such a way that an inverse futures contract is worth *k* USD, regardless of the quote.
 
 [^2]: Sometimes, however, it can be preferable to wait until the position to be possibly opened corresponds, in USD, at least to a certain fraction of the initial capital, to limit the impact of fees.
